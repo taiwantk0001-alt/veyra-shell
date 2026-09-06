@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# 在 Mac + Xcode 上执行一次，生成 ios-shell/base.ipa（未签名壳，供服务器注入网页 + 轻松签签名）
+# 在 Mac / Codemagic 上执行，生成 ios-shell/base.ipa（未签名壳）
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -9,29 +9,37 @@ DERIVED="$ROOT/ios-shell/.derived"
 
 if ! command -v xcodebuild >/dev/null 2>&1; then
   echo "错误：需要在安装了 Xcode 的 Mac 上运行本脚本。"
-  echo "Windows / Linux 服务器无法编译 iOS 壳。"
   exit 1
 fi
 
-rm -rf "$DERIVED"
+rm -rf "$DERIVED" "$OUT_IPA"
 mkdir -p "$DERIVED"
 
-echo "==> 编译未签名 ShellApp（iphoneos）…"
+echo "==> xcodebuild -version"
+xcodebuild -version
+
+echo "==> 列出 schemes"
+xcodebuild -project "$PROJ" -list
+
+echo "==> 编译未签名 ShellApp（generic iOS）…"
 xcodebuild \
   -project "$PROJ" \
   -scheme ShellApp \
   -configuration Release \
   -sdk iphoneos \
+  -destination 'generic/platform=iOS' \
   -derivedDataPath "$DERIVED" \
+  ONLY_ACTIVE_ARCH=NO \
   CODE_SIGNING_ALLOWED=NO \
-  CODE_SIGN_IDENTITY="" \
   CODE_SIGNING_REQUIRED=NO \
-  DEVELOPMENT_TEAM="" \
+  CODE_SIGN_IDENTITY=- \
+  DEVELOPMENT_TEAM= \
   build
 
 APP="$(find "$DERIVED/Build/Products" -name 'ShellApp.app' -type d | head -n 1)"
 if [[ -z "$APP" || ! -d "$APP" ]]; then
   echo "错误：未找到 ShellApp.app"
+  find "$DERIVED/Build/Products" -maxdepth 4 -print || true
   exit 1
 fi
 
@@ -48,4 +56,4 @@ echo "==> 打包 base.ipa…"
 
 echo ""
 echo "完成：$OUT_IPA"
-echo "把该文件放到服务器项目的 ios-shell/base.ipa，即可后台生成业务 IPA，再用轻松签签名。"
+ls -lh "$OUT_IPA"
