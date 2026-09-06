@@ -1,0 +1,12 @@
+# Codemagic 云编译 iOS 壳（产出 base.ipa）
+
+## 要上传/推送到 Git 的内容（至少）
+- ios-shell/（整个目录）
+- tools/build-ios-shell.sh
+- codemagic.yaml
+
+完整项目推进去也可以。
+
+## 构建成功后
+在 Codemagic 构建页 → Artifacts → 下载 base.ipa  
+放到服务器：项目根目录/ios-shell/base.ipa
