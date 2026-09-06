@@ -24,7 +24,9 @@ final class ViewController: UIViewController, WKUIDelegate, WKNavigationDelegate
     webView.uiDelegate = self
     webView.navigationDelegate = self
     webView.scrollView.bounces = true
-    webView.scrollView.contentInsetAdjustmentBehavior = .never
+    if #available(iOS 11.0, *) {
+      webView.scrollView.contentInsetAdjustmentBehavior = .never
+    }
     webView.isOpaque = false
     webView.backgroundColor = .white
     view.addSubview(webView)
@@ -50,15 +52,5 @@ final class ViewController: UIViewController, WKUIDelegate, WKNavigationDelegate
 
   func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
     // 预留：网页可通过 webkit.messageHandlers.lingNative 调用
-  }
-
-  func webView(
-    _ webView: WKWebView,
-    requestMediaCapturePermissionFor origin: WKSecurityOrigin,
-    initiatedByFrame frame: WKFrameInfo,
-    type: WKMediaCaptureType,
-    decisionHandler: @escaping (WKPermissionDecision) -> Void
-  ) {
-    decisionHandler(.grant)
   }
 }
