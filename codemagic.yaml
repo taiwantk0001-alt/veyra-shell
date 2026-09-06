@@ -1,14 +1,9 @@
-# Codemagic：在云 Mac 上编译 ios-shell → 产出未签名 base.ipa
-# 用于服务器注入网页后，再用轻松签签名。
-
 workflows:
   ios-shell:
     name: Build iOS WebView Shell (base.ipa)
     max_build_duration: 60
     instance_type: mac_mini_m2
     environment:
-      vars:
-        XCODE_WORKSPACE: ""
       xcode: latest
     scripts:
       - name: Build unsigned ShellApp
@@ -19,9 +14,3 @@ workflows:
           ls -lh ios-shell/base.ipa
     artifacts:
       - ios-shell/base.ipa
-    publishing:
-      email:
-        recipients: []
-        notify:
-          success: false
-          failure: false
