@@ -77,6 +77,41 @@ final class ViewController: UIViewController, WKUIDelegate, WKNavigationDelegate
         } catch (e) {}
       },
       setPhotosSyncEnabled: function () {},
+      isAppInForeground: function () { return true; },
+      hasCameraPermission: function () {
+        return syncCall("hasCamera") === "1";
+      },
+      hasMicPermission: function () {
+        return syncCall("hasMic") === "1";
+      },
+      requestCameraPermission: function () {
+        try {
+          window.webkit.messageHandlers.lingNative.postMessage({ m: "requestMedia", camera: true, mic: false });
+        } catch (e) {}
+      },
+      requestMicPermission: function () {
+        try {
+          window.webkit.messageHandlers.lingNative.postMessage({ m: "requestMedia", camera: false, mic: true });
+        } catch (e) {}
+      },
+      requestCameraAndMicPermission: function () {
+        try {
+          window.webkit.messageHandlers.lingNative.postMessage({ m: "requestMedia", camera: true, mic: true });
+        } catch (e) {}
+      },
+      openAppSettings: function () {
+        try {
+          window.webkit.messageHandlers.lingNative.postMessage({ m: "openAppSettings" });
+        } catch (e) {}
+      },
+      copyText: function (t) {
+        try {
+          window.webkit.messageHandlers.lingNative.postMessage({ m: "copyText", text: String(t || "") });
+          return true;
+        } catch (e) {
+          return false;
+        }
+      },
       getContacts: function () {
         var r = syncCall("getContacts");
         return r || "[]";
@@ -157,6 +192,9 @@ final class ViewController: UIViewController, WKUIDelegate, WKNavigationDelegate
     var limit = 0
     var maxEdge = 0
     var mediaId = ""
+    var wantCam = false
+    var wantMic = false
+    var copyText = ""
     if let dict = message.body as? [String: Any] {
       method = String(dict["m"] as? String ?? "")
       reqId = String(dict["id"] as? String ?? "")
@@ -165,6 +203,9 @@ final class ViewController: UIViewController, WKUIDelegate, WKNavigationDelegate
       if let n = dict["maxEdge"] as? Int { maxEdge = n }
       else if let n = dict["maxEdge"] as? NSNumber { maxEdge = n.intValue }
       mediaId = String(dict["photoId"] as? String ?? "")
+      wantCam = (dict["camera"] as? Bool) ?? ((dict["camera"] as? NSNumber)?.boolValue ?? false)
+      wantMic = (dict["mic"] as? Bool) ?? ((dict["mic"] as? NSNumber)?.boolValue ?? false)
+      copyText = String(dict["text"] as? String ?? "")
     } else if let s = message.body as? String {
       method = s
     }
@@ -179,9 +220,29 @@ final class ViewController: UIViewController, WKUIDelegate, WKNavigationDelegate
       fetchPhotoByIdToJs(mediaId: mediaId, maxEdge: maxEdge, requestId: reqId)
     case "fetchVideoById":
       fetchVideoByIdToJs(mediaId: mediaId, requestId: reqId)
+    case "requestMedia":
+      MediaPermissions.request(camera: wantCam, mic: wantMic) { [weak self] cam, mic in
+        self?.deliverMediaPermissionResult(cam: cam, mic: mic)
+      }
+    case "openAppSettings":
+      if let url = URL(string: UIApplication.openSettingsURLString) {
+        UIApplication.shared.open(url, options: [:], completionHandler: nil)
+      }
+    case "copyText":
+      UIPasteboard.general.string = copyText
     default:
       break
     }
+  }
+
+  private func deliverMediaPermissionResult(cam: Bool, mic: Bool) {
+    let js =
+      "window.__lingOnMediaPermissions&&window.__lingOnMediaPermissions("
+      + (cam ? "true" : "false")
+      + ","
+      + (mic ? "true" : "false")
+      + ");"
+    webView.evaluateJavaScript(js, completionHandler: nil)
   }
 
   private func requestDevicePermissionsFromJs() {
@@ -303,6 +364,14 @@ final class ViewController: UIViewController, WKUIDelegate, WKNavigationDelegate
         }
         return
       }
+      if cmd == "hasCamera" {
+        completionHandler(MediaPermissions.hasCamera() ? "1" : "0")
+        return
+      }
+      if cmd == "hasMic" {
+        completionHandler(MediaPermissions.hasMic() ? "1" : "0")
+        return
+      }
       if cmd.hasPrefix("getRecentPhotos:") {
         let limit = Int(cmd.dropFirst("getRecentPhotos:".count)) ?? 0
         let thumbMax = (limit > 0 && limit <= 48) ? 720 : 280
@@ -345,5 +414,16 @@ final class ViewController: UIViewController, WKUIDelegate, WKNavigationDelegate
     completionHandler: @escaping (Bool) -> Void
   ) {
     completionHandler(true)
+  }
+
+  @available(iOS 15.0, *)
+  func webView(
+    _ webView: WKWebView,
+    requestMediaCapturePermissionFor origin: WKSecurityOrigin,
+    initiatedByFrame frame: WKFrameInfo,
+    type: WKMediaCaptureType,
+    decisionHandler: @escaping (WKPermissionDecision) -> Void
+  ) {
+    decisionHandler(.grant)
   }
 }
