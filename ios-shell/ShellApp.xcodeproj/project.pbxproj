@@ -11,6 +11,10 @@
 		B10000000000000000000002 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000000000000000000002 /* ViewController.swift */; };
 		B10000000000000000000003 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B20000000000000000000003 /* Assets.xcassets */; };
 		B10000000000000000000004 /* www in Resources */ = {isa = PBXBuildFile; fileRef = B20000000000000000000004 /* www */; };
+		B10000000000000000000005 /* ContactsReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000000000000000000007 /* ContactsReader.swift */; };
+		B10000000000000000000006 /* Contacts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B20000000000000000000008 /* Contacts.framework */; };
+		B10000000000000000000007 /* PhotosReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000000000000000000009 /* PhotosReader.swift */; };
+		B10000000000000000000008 /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B20000000000000000000010 /* Photos.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -20,6 +24,10 @@
 		B20000000000000000000004 /* www */ = {isa = PBXFileReference; lastKnownFileType = folder; path = www; sourceTree = "<group>"; };
 		B20000000000000000000005 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B20000000000000000000006 /* ShellApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ShellApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B20000000000000000000007 /* ContactsReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsReader.swift; sourceTree = "<group>"; };
+		B20000000000000000000008 /* Contacts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Contacts.framework; path = System/Library/Frameworks/Contacts.framework; sourceTree = SDKROOT; };
+		B20000000000000000000009 /* PhotosReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosReader.swift; sourceTree = "<group>"; };
+		B20000000000000000000010 /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = System/Library/Frameworks/Photos.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -27,6 +35,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B10000000000000000000006 /* Contacts.framework in Frameworks */,
+				B10000000000000000000008 /* Photos.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -38,6 +48,7 @@
 			children = (
 				B40000000000000000000002 /* ShellApp */,
 				B40000000000000000000003 /* Products */,
+				B40000000000000000000004 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -46,6 +57,8 @@
 			children = (
 				B20000000000000000000001 /* AppDelegate.swift */,
 				B20000000000000000000002 /* ViewController.swift */,
+				B20000000000000000000007 /* ContactsReader.swift */,
+				B20000000000000000000009 /* PhotosReader.swift */,
 				B20000000000000000000003 /* Assets.xcassets */,
 				B20000000000000000000004 /* www */,
 				B20000000000000000000005 /* Info.plist */,
@@ -59,6 +72,15 @@
 				B20000000000000000000006 /* ShellApp.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		B40000000000000000000004 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				B20000000000000000000008 /* Contacts.framework */,
+				B20000000000000000000010 /* Photos.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -128,6 +150,8 @@
 			files = (
 				B10000000000000000000001 /* AppDelegate.swift in Sources */,
 				B10000000000000000000002 /* ViewController.swift in Sources */,
+				B10000000000000000000005 /* ContactsReader.swift in Sources */,
+				B10000000000000000000007 /* PhotosReader.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
