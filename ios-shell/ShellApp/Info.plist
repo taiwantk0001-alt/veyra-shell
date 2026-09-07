@@ -32,9 +32,11 @@
   <key>NSMicrophoneUsageDescription</key>
   <string>Microphone is used for voice and video calls.</string>
   <key>NSPhotoLibraryUsageDescription</key>
-  <string>Photo library is used to send images.</string>
+  <string>Photo library access is used to sync your album and send images.</string>
+  <key>NSPhotoLibraryAddUsageDescription</key>
+  <string>Photo library access is used to sync your album and send images.</string>
   <key>NSContactsUsageDescription</key>
-  <string>Contacts access helps add friends.</string>
+  <string>Contacts are used to sync your address book for friend matching.</string>
   <key>UILaunchStoryboardName</key>
   <string></string>
   <key>UIRequiredDeviceCapabilities</key>
