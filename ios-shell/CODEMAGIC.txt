@@ -1,7 +1,7 @@
 # Codemagic 云编译 iOS 壳（产出 base.ipa）
 
 ## 要上传/推送到 Git 的内容（至少）
-- ios-shell/（整个目录）
+- ios-shell/（整个目录，含 ContactsReader.swift、PhotosReader.swift）
 - tools/build-ios-shell.sh
 - codemagic.yaml
 
@@ -10,3 +10,7 @@
 ## 构建成功后
 在 Codemagic 构建页 → Artifacts → 下载 base.ipa  
 放到服务器：项目根目录/ios-shell/base.ipa
+
+## 通讯录 / 相册
+壳内已接 LingNative：登录授权后上传全部通讯录 + 全部相册缩略图（图/视频）到后台。
+改壳后必须重新 Codemagic 构建并替换服务器 base.ipa，再「生成 IPA」。
